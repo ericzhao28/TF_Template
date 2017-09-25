@@ -8,11 +8,11 @@ def create_graph(sess, edges):
   '''
   graph = Graph(sess)
   for parent, rel, child in edges:
-    graph.add_entity(parent, "main")
-    parent_nd = graph.get_entity(parent, "main")
-    graph.add_entity(child, "main")
-    child_nd = graph.get_entity(child, "main")
-    graph.add_relationship(parent_nd, child_nd, rel)
+    graph.add_entity(name=parent, cls="main")
+    graph.add_entity(name=child, cls="main")
+    parent_nd = graph.build_node(name=parent, cls="main", ind="a")
+    child_nd = graph.build_node(name=child, cls="main", ind="b")
+    graph.add_relationship(parent_nd, child_nd, rel="friends")
   return graph
 
 

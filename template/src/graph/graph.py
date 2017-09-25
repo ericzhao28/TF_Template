@@ -20,32 +20,40 @@ class Graph(DriverMedium):
     '''
     Return names of all entities
     '''
-    return self.sess.read_transaction(self.tx_get_entities)
+    return self.sess.read_transaction(self.tx_get_entities, self.build_node())
 
-  def get_entity(self, name, cls):
+  def get_entity(self, *args, **kargs):
     '''
     Get an entity.
     '''
-    return self.sess.read_transaction(self.tx_get_entity, name, cls)
+    return self.sess.read_transaction(self.tx_get_entity,
+                                      self.build_node(*args, **kargs))
 
-  def add_entity(self, name, cls):
+  def add_entity(self, *args, **kargs):
     '''
     Add an entity to the graph.
     '''
-    self.sess.write_transaction(self.tx_merge_entity, name, cls)
+    self.sess.write_transaction(self.tx_merge_entity,
+                                self.build_node(*args, **kargs))
 
-  def add_relationship(self, *args, **kargs):
-    pass
+  def add_relationship(self, parent, child, *args, **kargs):
+    '''
+    Add a relationship to the graph.
+    '''
+    self.sess.write_transaction(self.tx_merge_relationship,
+                                parent, child,
+                                self.build_relationship(*args, **kargs))
 
   def wipe(self):
     '''
     Wipe all nodes from graph.
     '''
-    self.sess.write_transaction(self.tx_delete_entities, None, None)
+    self.sess.write_transaction(self.tx_delete_entities, self.build_node())
 
   def wipe_tests(self):
     '''
     Wipe all test nodes from graph.
     '''
-    self.sess.write_transaction(self.tx_delete_entities, None, "test")
+    self.sess.write_transaction(self.tx_delete_entities,
+                                self.build_node(cls="test"))
 
