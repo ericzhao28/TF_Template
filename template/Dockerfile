@@ -31,3 +31,5 @@ RUN export C_INCLUDE_PATH=/usr/include
 RUN pip3 install --upgrade pip
 RUN pip3 install -r ./requirements.txt
 
+# Hop into /
+WORKDIR /
