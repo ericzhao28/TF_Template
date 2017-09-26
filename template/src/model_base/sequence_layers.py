@@ -106,11 +106,21 @@ class SequenceLayers():
       W = tf.get_variable("W", dtype=tf.float32,
                           shape=(2 * config['h_gru'], config['h_dense']))
       A = tf.tanh(tf.matmul(M, W), name="A")
-      assert(A.shape == (config['n_batches'], config['h_dense']))
 
       return A, H
 
   def _embedding_layer(self, X, var_scope, config):
+    '''
+    Builds a layer for fetching embeddings based on id.
+    Args:
+      X - input data of shape (batch)
+      var_scope - string name of tf variable scope
+      config {
+          'emb_path': path to embedding word2vec file,
+          'emb_dim': dimensions of each word embedding,
+        }
+    '''
+
     model = KeyedVectors.load_word2vec_format(config['emb_path'])
     vocab = {}
     for k, v in model.vocab.items():
@@ -122,8 +132,11 @@ class SequenceLayers():
     del(model)
     del(vocab)
 
-    embedded_X = tf.cast(tf.nn.embedding_lookup(embeddings, X),
-                         name="embedded_x",
-                         dtype=tf.float32)
+    embedded_X = tf.cast(
+        tf.nn.embedding_lookup(embeddings, X),
+        name="embedded_x",
+        dtype=tf.float32
+    )
 
     return embedded_X
+
