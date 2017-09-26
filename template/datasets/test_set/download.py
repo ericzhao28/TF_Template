@@ -1,4 +1,3 @@
-from ..utils.network_utils import download_file
 from . import config, preprocess_file
 import pickle
 

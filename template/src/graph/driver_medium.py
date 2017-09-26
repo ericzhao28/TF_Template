@@ -1,6 +1,10 @@
 class DriverMedium():
   '''
   Offers convenient layer between Neo4j and client
+  Node = string.
+  Entity = record member.
+  Edge = string.
+  Relationship = record member.
   '''
 
   @staticmethod
@@ -23,84 +27,20 @@ class DriverMedium():
     return "(" + ind + cls_compound + property_compound + ")"
 
   @staticmethod
-  def build_relationship(rel=None, ind="r"):
+  def build_edge(rel=None, ind="r"):
     '''
-    Build relationship string to feed into Cypher queries.
+    Build edge string to feed into Cypher queries.
     '''
     rel_compound = "" if rel is None else (":%s" % rel)
     return "[" + ind + rel_compound + "]"
 
   @staticmethod
-  def tx_get_relationship(tx, parent, child, relationship):
+  def entity_to_node(entity, *args, **kargs):
     '''
-    Get entity.
+    Build node from record entity to feed into Cypher queries.
     '''
-    result = tx.run("MATCH %s-%s->%s RETURN n" % (child, relationship, parent))
-    return result
-
-  @staticmethod
-  def tx_get_entity(tx, node):
-    '''
-    Get entity.
-    '''
-    result = tx.run("MATCH %s RETURN n" % node)
-    return result
-
-  @staticmethod
-  def tx_get_entities(tx, node):
-    '''
-    Get entities.
-    '''
-
-    result = tx.run("MATCH %s RETURN n" % node)
-    print("MATCH %s RETURN n" % node)
-    return result
-
-  @staticmethod
-  def tx_create_relationship(tx, parent, child, relationship):
-    '''
-    Get entity.
-    '''
-    tx.run("CREATE %s-%s->%s" % (child, relationship, parent))
-    return None
-
-  @staticmethod
-  def tx_create_entity(tx, node):
-    '''
-    Create entity.
-    '''
-    tx.run("CREATE %s" % node)
-    return None
-
-  @staticmethod
-  def tx_merge_relationship(tx, parent, child, relationship):
-    '''
-    Get entity.
-    '''
-    tx.run("MERGE %s-%s->%s" % (child, relationship, parent))
-    return None
-
-  @staticmethod
-  def tx_merge_entity(tx, node):
-    '''
-    Merge entity.
-    '''
-    tx.run("MERGE %s" % node)
-    return None
-
-  @staticmethod
-  def tx_delete_entities(tx, node):
-    '''
-    Delete entities with optional name and class.
-    '''
-    tx.run("MATCH %s DETACH DELETE n" % node)
-    return None
-
-  @staticmethod
-  def tx_delete_relationships(tx, parent, child, relationship):
-    '''
-    Delete entities with optional name and class.
-    '''
-    tx.run("MATCH %s-%s->%s DETACH DELETE r" % (child, relationship, parent))
-    return None
+    return self.build_node(*args, 
+                           cls=entity.labels[0], 
+                           properties=entity.properties, 
+                           **kargs)
 

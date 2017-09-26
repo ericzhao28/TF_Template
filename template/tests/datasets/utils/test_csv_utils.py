@@ -1,8 +1,10 @@
 from ....datasets.utils import csv_utils
+import unittest
 
 
-def test_build_headers():
-  row = ["chocolate", "yummy", "weird"]
-  headers_key = csv_utils.build_headers(row)
-  assert(headers_key == {0: "chocolate", 1: "yummy", 2: "weird"})
+class TestCSVUtils(unittest.TestCase):
+  def test_build_headers(self):
+    row = ["chocolate", "yummy", "weird"]
+    headers_key = csv_utils.build_headers(row)
+    self.assertEqual(headers_key, {0: "chocolate", 1: "yummy", 2: "weird"})
 

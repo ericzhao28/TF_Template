@@ -10,11 +10,12 @@ def create_graph(sess, edges, test=False):
   cls = "main" if test is False else "test"
   graph = Graph(sess)
   for parent, rel, child in edges:
-    graph.add_entity(name=parent, cls=cls)
-    graph.add_entity(name=child, cls=cls)
-    parent_nd = graph.build_node(name=parent, cls=cls, ind="a")
-    child_nd = graph.build_node(name=child, cls=cls, ind="b")
-    graph.add_relationship(parent_nd, child_nd, rel="friends")
+    parent_nd = graph.build_node(name=parent, cls=cls, ind='a')
+    child_nd = graph.build_node(name=child, cls=cls, ind='b')
+    edge = graph.build_edge(rel=rel)
+    graph.add_entity(parent_nd)
+    graph.add_entity(child_nd)
+    graph.add_relationship(parent_nd, child_nd, edge)
   return graph
 
 

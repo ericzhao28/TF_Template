@@ -1,0 +1,2 @@
+model_checkpoint_path: "/template/datasets/test_set/saves/checkpoints/default.model"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model"

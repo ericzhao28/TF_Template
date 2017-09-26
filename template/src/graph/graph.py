@@ -20,46 +20,55 @@ class Graph(DriverMedium):
     '''
     Return names of all entities.
     '''
-    names = []
-    result = self.sess.read_transaction(self.tx_get_entities,
-                                        self.build_node())
-    for node in result.records():
-      print(node)
-      names.append(node[0].properties['name'])
-    return names
+    for record in self.get_entity("(n)"):
+      print(record)
+      yield(record[0].properties['name'])
 
-  def get_entity(self, *args, **kargs):
+  def get_entity(self, node):
     '''
     Get an entity.
     '''
-    return self.sess.read_transaction(self.tx_get_entity,
-                                      self.build_node(*args, **kargs))
+    query = "MATCH %s RETURN n" % node
+    print(query)
+    return self.sess.run(query)
 
-  def add_entity(self, *args, **kargs):
+  def get_relationship(self, parent_nd, child_nd, edge):
+    '''
+    Get a relationship from the graph.
+    '''
+    query = "MATCH %s-%s->%s RETURN r" % (parent_nd, edge, child_nd)
+    print(query)
+    return self.sess.run(query)
+
+  def add_entity(self, node):
     '''
     Add an entity to the graph.
     '''
-    self.sess.write_transaction(self.tx_merge_entity,
-                                self.build_node(*args, **kargs))
+    query = "MERGE %s" % node
+    print(query)
+    return self.sess.run(query)
 
-  def add_relationship(self, parent, child, *args, **kargs):
+  def add_relationship(self, parent_nd, child_nd, edge):
     '''
     Add a relationship to the graph.
     '''
-    self.sess.write_transaction(self.tx_merge_relationship,
-                                parent, child,
-                                self.build_relationship(*args, **kargs))
+    query = "MERGE %s-%s->%s" % (parent_nd, edge, child_nd)
+    print(query)
+    return self.sess.run(query)
 
   def wipe(self):
     '''
     Wipe all nodes from graph.
     '''
-    self.sess.write_transaction(self.tx_delete_entities, self.build_node())
+    query = "MATCH (n) DETACH DELETE n"
+    print(query)
+    return self.sess.run(query)
 
   def wipe_tests(self):
     '''
     Wipe all test nodes from graph.
     '''
-    self.sess.write_transaction(self.tx_delete_entities,
-                                self.build_node(cls="test"))
+    query = "MATCH (n:test) DETACH DELETE n"
+    print(query)
+    return self.sess.run(query)
 

@@ -7,7 +7,7 @@ def build_headers(row):
   '''
   Build headers for a row.
   Args:
-    - row from csv
+    - row (list): from csv.
   Returns:
     - headers_key (dict): {0: "ip", 1: "name"}
   '''

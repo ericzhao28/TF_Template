@@ -12,7 +12,7 @@ CHECKPOINTS_DIR = SAVES_DIR + "checkpoints/"
 
 DOWNLOAD_URL = "https://clubpenguin.com"
 RAW_SAVE_NAME = "raw_dataset.csv"
-PROCESSED_SAVE_NAME = "processed_dataset.csv"
+PROCESSED_SAVE_NAME = "processed_dataset.p"
 
 SEQ_LEN = 10
 
@@ -20,6 +20,5 @@ numerical_fields = ["small_relevant", "small_random", "big_random", "big_relevan
 label_field = "label"
 seq_field = "seq_number"
 
-label_classes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
+label_classes = ["0", "10", "20", "30", "40", "50", "60", "70", "80", "90"]
 
