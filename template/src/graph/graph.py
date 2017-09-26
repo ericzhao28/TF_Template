@@ -18,9 +18,15 @@ class Graph(DriverMedium):
   @property
   def entity_names(self):
     '''
-    Return names of all entities
+    Return names of all entities.
     '''
-    return self.sess.read_transaction(self.tx_get_entities, self.build_node())
+    names = []
+    result = self.sess.read_transaction(self.tx_get_entities,
+                                        self.build_node())
+    for node in result.records():
+      print(node)
+      names.append(node[0].properties['name'])
+    return names
 
   def get_entity(self, *args, **kargs):
     '''

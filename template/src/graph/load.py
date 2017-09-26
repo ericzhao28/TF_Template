@@ -19,5 +19,9 @@ def create_graph(sess, edges, test=False):
 
 
 def load_graph(sess):
+  '''
+  Generate empty graph without loading in additional data,
+  assuming server-side Neo4j graph already exists.
+  '''
   return Graph(sess)
 

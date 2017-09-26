@@ -36,7 +36,7 @@ class DriverMedium():
     Get entity.
     '''
     result = tx.run("MATCH %s-%s->%s RETURN n" % (child, relationship, parent))
-    return result.single()[0]
+    return result
 
   @staticmethod
   def tx_get_entity(tx, node):
@@ -44,7 +44,7 @@ class DriverMedium():
     Get entity.
     '''
     result = tx.run("MATCH %s RETURN n" % node)
-    return result.single()[0]
+    return result
 
   @staticmethod
   def tx_get_entities(tx, node):
@@ -53,7 +53,8 @@ class DriverMedium():
     '''
 
     result = tx.run("MATCH %s RETURN n" % node)
-    return result.single()
+    print("MATCH %s RETURN n" % node)
+    return result
 
   @staticmethod
   def tx_create_relationship(tx, parent, child, relationship):
