@@ -22,8 +22,8 @@ def test_optimizations():
   loss, acc = StandardLayers()._define_optimization_vars(
       target, prediction, None)
 
-  assert(loss.shape == (1,))
+  assert(loss.shape == [])
   assert(loss.dtype == tf.float32)
-  assert(acc.shape == (1,))
+  assert(acc.shape == [])
   assert(acc.dtype == tf.float32)
 

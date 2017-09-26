@@ -1,4 +1,5 @@
 from ...src.graph import DriverMedium
+from collections import OrderedDict
 
 
 def test_build_node():
@@ -8,20 +9,21 @@ def test_build_node():
   assert("(a:test)" == driver.build_node(cls="test", ind="a"))
   assert("(n:test)" == driver.build_node(cls="test", ind="n"))
   assert("(n {name:'yay'})" == driver.build_node(name="yay"))
-  assert("(n {name:'yay', woo:'hello', no:'what'})" ==
-         driver.build_node(name="yay", properties={'woo': 'hello',
-                                                   'no': 'what'}))
-  assert("(n {woo:'hello', no:'what'})" ==
-         driver.build_node(properties={'woo': 'hello', 'no': 'what'}))
-  assert("(n:test {name:'yay', woo:'hello', no:'what'})" ==
-         driver.build_node(cls="test", name="yay", properties={'woo': 'hello',
-                                                               'no': 'what'}))
-  assert("(n:test {woo:'hello', no:'what'})" ==
-         driver.build_node(cls="test", properties={'woo': 'hello',
-                                                   'no': 'what'}))
-  assert("(a:test {woo:'hello', no:'what'})" ==
-         driver.build_node(cls="test", properties={'woo': 'hello',
-                                                   'no': 'what'}, ind="a"))
+
+  d = OrderedDict(sorted({'no': 'what', 'woo': 'hello'}.items(), key=lambda t: t[0]))
+  assert("(n {no:'what', woo:'hello', name:'yay'})" ==
+         driver.build_node(name="yay", properties=d))
+  d = OrderedDict(sorted({'no': 'what', 'woo': 'hello'}.items(), key=lambda t: t[0]))
+  assert("(n {no:'what', woo:'hello'})" == driver.build_node(properties=d))
+  d = OrderedDict(sorted({'no': 'what', 'woo': 'hello'}.items(), key=lambda t: t[0]))
+  assert("(n:test {no:'what', woo:'hello', name:'yay'})" ==
+         driver.build_node(cls="test", name="yay", properties=d))
+  d = OrderedDict(sorted({'no': 'what', 'woo': 'hello'}.items(), key=lambda t: t[0]))
+  assert("(n:test {no:'what', woo:'hello'})" ==
+         driver.build_node(cls="test", properties=d))
+  d = OrderedDict(sorted({'no': 'what', 'woo': 'hello'}.items(), key=lambda t: t[0]))
+  assert("(a:test {no:'what', woo:'hello'})" ==
+         driver.build_node(cls="test", properties=d, ind="a"))
 
 
 def test_build_relationship():

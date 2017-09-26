@@ -1,9 +1,6 @@
-import os
-
 ITERATIONS = 23
 BATCH_SIZE = 3
-EMB_DIM = 300
-EMB_PATH = os.path.dirname(os.path.realpath(__file__)) + "/embeddings.vector"
+N_FEATURES = 300
 N_STEPS = 7
 LAYERS = {
     'H_GRU': 11,

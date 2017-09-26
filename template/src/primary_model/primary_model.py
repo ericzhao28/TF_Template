@@ -8,21 +8,15 @@ class Primary(Base, SequenceLayers):
     Base.__init__(self, sess, config, data_config)
 
   def build_model(self):
-    self.x = tf.placeholder(tf.float32, (config.BATCH_SIZE, config.N_STEPS))
+    self.x = tf.placeholder(tf.float32, (config.BATCH_SIZE, config.N_STEPS,
+                                         config.N_FEATURES))
     self.target = tf.placeholder(tf.float32, (config.BATCH_SIZE,
                                               config.N_CLASSES))
-
-    embedder_config = {
-        'emb_dim': config.EMB_DIM,
-        'emb_path': config.EMB_PATH
-    }
-    self.embedded_x = self._embedding_layer(self.x, "embedder",
-                                            embedder_config)
 
     encoder_config = {
         'n_batches': config.BATCH_SIZE,
         'n_steps': config.N_STEPS,
-        'n_features': config.EMB_DIM,
+        'n_features': config.N_FEATURES,
         'h_gru': config.LAYERS['h_gru'],
         'h_att': config.LAYERS['h_att'],
         'h_dense': config.ENCODED_DIM

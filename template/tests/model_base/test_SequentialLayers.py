@@ -38,7 +38,7 @@ def test_attention():
       'h_dense': 19
   }
   encoded_state, encoded_seq = SequenceLayers()._attention_encoder_layer(
-      raw, "encoder", encoder_config)
+      raw, "attention", encoder_config)
 
   assert(encoded_state.shape == (3, 19))
   assert(encoded_state.dtype == tf.float32)
