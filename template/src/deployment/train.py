@@ -1,5 +1,5 @@
 from ..main import load
-from ...datasets import primary_set
+from ...datasets import test_set
 import tensorflow as tf
 from neo4j.v1 import GraphDatabase
 
@@ -12,9 +12,10 @@ def main():
   with driver.session() as neo_sess:
     with tf.Session() as tf_sess:
       primary_model = load.initialize_models(tf_sess, neo_sess)
-      dataset = primary_set.load()
+      dataset = test_set.load()
       assert(dataset is not None)
-      primary_model.train(dataset['X'], dataset['Y'])
+      X, Y = dataset
+      primary_model.train(X, Y)
       primary_model.save()
 
 

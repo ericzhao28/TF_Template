@@ -11,7 +11,13 @@ execute_func = load.initialize_func()
 
 @app.route("/demo", methods=['POST'])
 def get_demo():
-  """For a text query, pipe it through the gate and return the best answer."""
+  """
+  Simple synchronous endpoint for demo.
+
+  Make query to 0.0.0.0:5000/query with
+  POST protocol, payload: {"query": "hi"}.
+  Response: {"response": "hello"}
+  """
   text = str(request.data.get('query', ''))
   response = execute_func(text)
   return jsonify({'response': response})
