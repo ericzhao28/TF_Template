@@ -12,30 +12,52 @@ def preprocess_file(file_path):
   Returns:
     - dataset (dict): {"X": np.arr, "Y": np.arr}
   '''
-  X = featurize_csv(file_path)
-  Y = label_csv(file_path)
+  X_flat = featurize_csv(file_path)
+  metadata = metadatize_csv(file_path)
+  X, Y = segment(X_flat, metadata)
+
   return {"X": X, "Y": Y}
 
 
-def label_csv(file_path):
+def segment(X_flat, metadata):
+  raw = {}
+  for i in range(len(metadata)):
+    if metadata[i]['seq_id'] not in raw:
+      raw[metadata[i]['seq_id']] = {"metadatum":metadata[i], "x":[]}
+    raw[metadata[i]['seq_id']]['x'].append(X_flat[i])
+
+  X = []
+  Y = []
+  for seq_id, data in raw:
+    X.append(shaping_utils.fix_vector_length(data['x'], config.SEQ_LEN))
+    Y.append(data['metadatum']['y'])
+
+  return X, Y
+
+
+def metadatize_csv(file_path):
   '''
-  Load in a CSV and parse for labels.
+  Load in a CSV and parse for metadatas.
   Args:
     - file_path (str): path to raw dataset file
   Returns:
-    - Y: np.arr((n_points, n_classes), float32)
+    - metadata: [{info:a, label:x}... (n_classes)]
   '''
-  Y = []
+  metadata = []
   with open(file_path, 'r') as f:
     for i, row in enumerate(csv.reader(f)):
       if i == 0:
         headers_key = csv_utils.build_headers(row)
         continue
+      metadatum = {}
       for j, value in enumerate(row):
         if headers_key[j] == config.label_field:
-          Y.append(shaping_utils.one_hot(value, config.label_classes))
+          metadatum['y'] = shaping_utils.one_hot(value, config.label_classes)
+        elif headers_key[j] == config.seq_field:
+          metadatum['seq_id'] = value
+      metadata.append(metadatum)
 
-  return np.array(Y, dtype=np.float32)
+  return metadata
 
 
 def featurize_csv(file_path):

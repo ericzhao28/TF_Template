@@ -15,7 +15,6 @@ def main():
     print("Dataset already exists and test load succeded")
 
   except (OSError, IOError) as e:
-    download_file(config.DOWNLOAD_URL, config.DUMPS_DIR + config.RAW_SAVE_NAME)
     with open(config.DUMPS_DIR + config.PROCESSED_SAVE_NAME, 'wb') as f:
       pickle.dump(preprocess_file(config.DUMPS_DIR + config.RAW_SAVE_NAME), f)
 

@@ -8,6 +8,6 @@ def test_generate():
   '''
 
   X, Y = sequential.generate()
-  assert(np.array(X).shape == (200 * 20, 5))
-  assert(np.array(Y).shape == (200 * 20,))
+  assert(np.array(X).shape == (1808, 5))
+  assert(np.array(Y).shape == (1808,))
 

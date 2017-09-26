@@ -8,6 +8,6 @@ def test_generate():
   '''
 
   X, Y = double_seq.generate()
-  assert(np.array(X).shape == (200 * 8 * 20, 6))
-  assert(np.array(Y).shape == (200 * 8 * 20,))
+  assert(np.array(X).shape == (17640, 6))
+  assert(np.array(Y).shape == (17640,))
 
