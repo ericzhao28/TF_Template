@@ -8,10 +8,14 @@ class Primary(Base, SequenceLayers):
     Base.__init__(self, sess, config, data_config)
 
   def build_model(self):
-    self.x = tf.placeholder(tf.float32, (config.BATCH_SIZE, config.N_STEPS,
-                                         config.N_FEATURES))
-    self.target = tf.placeholder(tf.float32, (config.BATCH_SIZE,
-                                              config.N_CLASSES))
+    '''
+    Build the primary model (default seq architecture).
+    '''
+
+    self.x = tf.placeholder(
+        tf.float32, (config.BATCH_SIZE, config.N_STEPS, config.N_FEATURES))
+    self.target = tf.placeholder(tf.float32,
+                                 (config.BATCH_SIZE, config.N_CLASSES))
 
     encoder_config = {
         'n_batches': config.BATCH_SIZE,
@@ -21,11 +25,9 @@ class Primary(Base, SequenceLayers):
         'h_att': config.LAYERS['h_att'],
         'h_dense': config.ENCODED_DIM
     }
-
     encoded_state, encoded_seq = self._attention_encoder_layer(
-        self.embedded_x, "encoder", encoder_config)
+        self.x, "encoder", encoder_config)
 
-    # Get entities predictions
     predictor_config = {
         'n_batches': config.BATCH_SIZE,
         'n_input': config.ENCODED_DIM,
@@ -36,7 +38,6 @@ class Primary(Base, SequenceLayers):
         'predictor',
         predictor_config)
 
-    # Get loss and optimizer
     self.loss, self.acc = self._define_optimization_vars(
         self.target,
         self.prediction,
