@@ -1,4 +1,4 @@
-from . import DriverMedium
+from .driver_medium import DriverMedium
 
 
 class Graph(DriverMedium):
@@ -6,14 +6,14 @@ class Graph(DriverMedium):
   Graph class for holding basic graph logic.
   '''
 
-  def __init__(self, session):
-    self.session = session
+  def __init__(self, sess):
+    self.sess = sess
 
   def disconnect(self):
     '''
     Terminate neo4j session.
     '''
-    self.session.close()
+    self.sess.close()
 
   @property
   def entity_names(self):

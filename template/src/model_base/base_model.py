@@ -1,5 +1,5 @@
 import tensorflow as tf
-from . import StandardLayers
+from .standard_layers import StandardLayers
 
 tf.logging.set_verbosity(tf.logging.ERROR)
 

@@ -15,7 +15,7 @@ class DriverMedium():
     if len(properties) > 0:
       property_compound = " {"
       for key, value in properties.items():
-        property_compound += "%s: '%s', " % (key, value)
+        property_compound += "%s:'%s', " % (key, value)
       property_compound = property_compound[:-2] + "}"
     else:
       property_compound = ""
@@ -23,7 +23,7 @@ class DriverMedium():
     return "(" + ind + cls_compound + property_compound + ")"
 
   @staticmethod
-  def build_relationship(rel, ind="r"):
+  def build_relationship(rel=None, ind="r"):
     '''
     Build relationship string to feed into Cypher queries.
     '''
@@ -53,7 +53,7 @@ class DriverMedium():
     '''
 
     result = tx.run("MATCH %s RETURN n" % node)
-    return result.all()
+    return result.single()
 
   @staticmethod
   def tx_create_relationship(tx, parent, child, relationship):
@@ -92,7 +92,7 @@ class DriverMedium():
     '''
     Delete entities with optional name and class.
     '''
-    tx.run("MATCH %s DETACH DELETE n")
+    tx.run("MATCH %s DETACH DELETE n" % node)
     return None
 
   @staticmethod

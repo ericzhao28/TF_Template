@@ -7,3 +7,5 @@ sklearn
 neo4j-driver
 flask
 flask-restful
+flask-api
+flask-cors

@@ -4,6 +4,16 @@ networks:
   default:
 
 services:
+  dataset_generator:
+    build:
+      context: .
+      dockerfile: ./dataset_generator/Dockerfile
+    volumes:
+      - ./dataset_generator:/dataset_generator
+    networks:
+      - default
+    tty: true
+
   template:
     build:
       context: .

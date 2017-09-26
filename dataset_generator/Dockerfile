@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get update \
     && apt-get upgrade -y \
     && apt-get install -y
-RUN apt install ca-certificates gcc make libc-dev g++ bzip2 libssl-dev build-essential python3 pip3 -y
+RUN apt install ca-certificates gcc make libc-dev g++ bzip2 libssl-dev build-essential python3 python3-dev python3-pip -y
 
 # Hop into /service
 WORKDIR /service

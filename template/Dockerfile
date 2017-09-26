@@ -23,7 +23,6 @@ RUN wget -O - http://debian.neo4j.org/neotechnology.gpg.key | apt-key add - && \
     sed -i "s|#dbms.connector.bolt.listen_address=:7687|dbms.connector.bolt.listen_address=0.0.0.0:7687|g" /etc/neo4j/neo4j.conf && \
     sed -i "s|#dbms.connector.http.listen_address=:7474|dbms.connector.http.listen_address=0.0.0.0:7474|g" /etc/neo4j/neo4j.conf && \
     sed -i "s|#dbms.connector.https.listen_address=:7473|dbms.connector.https.listen_address=0.0.0.0:7473|g" /etc/neo4j/neo4j.conf
-RUN service neo4j start
 
 # Install Python requirements
 COPY ./template/requirements.txt ./requirements.txt
@@ -33,3 +32,4 @@ RUN pip3 install -r ./requirements.txt
 
 # Hop into /
 WORKDIR /
+RUN service neo4j start
