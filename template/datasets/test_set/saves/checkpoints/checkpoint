@@ -1,6 +1,0 @@
-model_checkpoint_path: "/template/datasets/test_set/saves/checkpoints/default.model-3699"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3339"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3429"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3519"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3609"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3699"
