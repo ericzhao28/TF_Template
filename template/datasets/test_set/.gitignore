@@ -3,3 +3,5 @@ dumps/*
 !dumps/raw_dataset.csv
 saves/graphs/*
 !saves/graphs/.gitkeep
+saves/checkpoints/*
+!saves/checkpoints/.gitkeep

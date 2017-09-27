@@ -1,16 +1,21 @@
 from . import config
 from ..model_base import Base, SequenceLayers
 import tensorflow as tf
+from .logger import model_logger
 
 
 class Primary(Base, SequenceLayers):
-  def __init__(self, sess, data_config):
-    Base.__init__(self, sess, config, data_config)
+  def __init__(self, sess, data_config, model_logger=model_logger):
+    model_logger.info('Instantiated primary model')
+    self.logger = model_logger
+    Base.__init__(self, sess, config, data_config, model_logger)
 
   def build_model(self):
     '''
     Build the primary model (default seq architecture).
     '''
+
+    self.logger.info('Building model...')
 
     self.x = tf.placeholder(
         tf.float32, (config.BATCH_SIZE, config.N_STEPS, config.N_FEATURES))
@@ -48,6 +53,8 @@ class Primary(Base, SequenceLayers):
         var_list=tf.trainable_variables(),
         global_step=self.global_step)
     self.summary_op = self._summaries()
+
+    self.logger.info('Model built.')
 
     return self
 

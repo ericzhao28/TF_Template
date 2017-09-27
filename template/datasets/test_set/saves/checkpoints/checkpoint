@@ -1,2 +1,6 @@
-model_checkpoint_path: "/template/datasets/test_set/saves/checkpoints/default.model"
-all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model"
+model_checkpoint_path: "/template/datasets/test_set/saves/checkpoints/default.model-4329"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-3969"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-4059"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-4149"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-4239"
+all_model_checkpoint_paths: "/template/datasets/test_set/saves/checkpoints/default.model-4329"

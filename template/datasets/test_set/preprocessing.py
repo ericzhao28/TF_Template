@@ -2,6 +2,7 @@ from . import config
 from ..utils import csv_utils, shaping_utils
 import numpy as np
 import csv
+from .logger import set_logger
 
 
 def preprocess_file(file_path):
@@ -10,6 +11,8 @@ def preprocess_file(file_path):
   Returns:
     - dataset (list): X (np.arr), Y (np.arr)
   '''
+
+  set_logger.info("Starting preprocessing...")
   return label_data(*segment_data(*load_data(file_path)))
 
 
@@ -49,12 +52,15 @@ def load_data(file_path):
   X = []
   metadata = []
   with open(file_path, 'r') as f:
+    set_logger.debug("Opened dataset csv...")
     for i, row in enumerate(csv.reader(f)):
       if i == 0:
         headers_key = csv_utils.build_headers(row)
+        set_logger.debug("Headers key generated: " + str(headers_key))
         continue
       X.append(__featurize_row(row, headers_key))
       metadata.append(__metadatize_row(row, headers_key))
+  set_logger.debug("Basic data loading complete.")
   return np.array(X, dtype=np.float32), metadata
 
 
@@ -69,10 +75,13 @@ def segment_data(X, metadata):
     - new_X (np.array): segmented np.array with +1 rank.
     - new_metadata: metadata cut to align with new_X.
   '''
+
+  set_logger.debug("Segmenting data...")
   new_X = []
   new_metadata = []
   seq_map = {}
 
+  set_logger.debug("Segment mapping...")
   for i in range(len(X)):
     seq_id = metadata[i]['seq_id']
     if seq_id not in seq_map:
@@ -82,9 +91,11 @@ def segment_data(X, metadata):
     else:
       new_X[seq_map[seq_id]].append(X[i])
 
+  set_logger.debug("Fixing sequence length padding/cutting...")
   for i in range(len(new_X)):
     new_X[i] = shaping_utils.fix_vector_length(new_X[i], config.SEQ_LEN)
 
+  set_logger.debug("Data segmentation complete.")
   return np.array(new_X, dtype=np.float32), new_metadata
 
 
@@ -98,8 +109,11 @@ def label_data(X, metadata):
     - X (np.array): the original X from args.
     - Y (np.array): the new labels for dataset.
   '''
+
+  set_logger.debug("Labelling data...")
   Y = []
   for i in range(len(X)):
     Y.append(shaping_utils.one_hot(metadata[i]['y'], config.label_classes))
+  set_logger.debug("Data labelled!")
   return X, np.array(Y, dtype=np.int32)
 
