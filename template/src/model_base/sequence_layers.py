@@ -42,7 +42,9 @@ class SequenceLayers():
 
       W = tf.get_variable("W", dtype=tf.float32,
                           shape=(2 * config['h_gru'], config['h_dense']))
-      A = tf.tanh(tf.matmul(O, W), name="A")
+
+      b = tf.get_variable("bias", shape=(config['h_dense']))
+      A = tf.tanh(tf.matmul(O, W) + b, name="A")
       assert(A.shape == (config['n_batches'], config['h_dense']))
 
       return A, H
@@ -118,7 +120,8 @@ class SequenceLayers():
 
       W = tf.get_variable("W", dtype=tf.float32,
                           shape=(2 * config['h_gru'], config['h_dense']))
-      A = tf.tanh(tf.matmul(M, W), name="A")
+      b = tf.get_variable("bias", shape=(config['h_dense']))
+      A = tf.tanh(tf.matmul(M, W) + b, name="A")
       assert(A.shape == (config['n_batches'], config['h_dense']))
 
       return A, H

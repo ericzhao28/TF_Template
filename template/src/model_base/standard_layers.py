@@ -25,7 +25,8 @@ class StandardLayers():
 
     with tf.variable_scope(var_scope):
       W = tf.get_variable("W", shape=(config['n_input'], config['n_classes']))
-      prediction = tf.nn.softmax(tf.matmul(X, W), name="prediction")
+      b = tf.get_variable("bias", shape=(config['n_classes']))
+      prediction = tf.nn.softmax(tf.matmul(X, W) + b, name="prediction")
       assert(prediction.shape == (config['n_batches'], config['n_classes']))
 
       return prediction
