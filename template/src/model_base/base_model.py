@@ -187,7 +187,7 @@ class Base(StandardLayers):
 
     # Structured as: [train, test, val]
     self.logger.debug('Partitioning with training size: ' + str(n_train) +
-                      'test size: ' + str(n_test) + ' and val size: ' +
+                      ' test size: ' + str(n_test) + ' and val size: ' +
                       str(n_val) + '...')
     self.logger.debug('First partitioning X...')
     train_X = shuffled_X[:n_train]
