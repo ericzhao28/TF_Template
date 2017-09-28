@@ -42,11 +42,11 @@ def load_data(file_path):
     Return metadatized dict for given row.
     '''
     metadatum = {}
-    for j, value in enumerate(row):
-      if headers_key[j] == config.label_field:
-        metadatum['y'] = value
-      elif headers_key[j] == config.seq_field:
-        metadatum['seq_id'] = value
+    for i, value in enumerate(row):
+      if headers_key[i] == config.label_field:
+        metadatum['y'] = str(value)
+      elif headers_key[i] == config.seq_field:
+        metadatum['seq_id'] = str(value)
     return metadatum
 
   X = []
@@ -58,6 +58,7 @@ def load_data(file_path):
         headers_key = csv_utils.build_headers(row)
         set_logger.debug("Headers key generated: " + str(headers_key))
         continue
+      set_logger.debug('Loading row: ' + str(i))
       X.append(__featurize_row(row, headers_key))
       metadata.append(__metadatize_row(row, headers_key))
   set_logger.debug("Basic data loading complete.")
