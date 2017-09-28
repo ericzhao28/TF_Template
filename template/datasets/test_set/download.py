@@ -16,7 +16,7 @@ def main():
       pickle.load(f)
       set_logger.info("Dataset pickle loaded")
 
-  except (OSError, IOError) as e:
+  except (EOFError, OSError, IOError) as e:
     set_logger.info("No dataset yet. Creating and writing new dataset...")
     with open(config.DUMPS_DIR + config.PROCESSED_SAVE_NAME, 'wb') as f:
       pickle.dump(preprocess_file(config.DUMPS_DIR + config.RAW_SAVE_NAME), f)
