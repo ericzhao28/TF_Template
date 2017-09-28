@@ -1,3 +1,3 @@
 from . import utils
-from . import test_set
+from . import generic_sequential, generic_double_seq, generic_flat
 

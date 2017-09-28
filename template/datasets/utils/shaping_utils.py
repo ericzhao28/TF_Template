@@ -35,7 +35,7 @@ def fix_vector_length(vector, length):
   '''
   vector = np.array(vector)
   right_padding = length - min(length, vector.shape[0])
-  padding_shape = [[0, right_padding]] + [[0, 0] * (len(vector.shape) - 1)]
+  padding_shape = [[0, right_padding]] + [[0, 0] for _ in range(len(vector.shape) - 1)]
   vector = np.pad(vector[:length], padding_shape,
                   'constant', constant_values=0)
   assert(vector.shape[0] == length)

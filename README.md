@@ -20,34 +20,36 @@ This cool template features a number of pretty neat features, including:
 * Docker-CE version 17.06.2-ce
 * Docker Compose version 1.14.0
 
-### Installation
+### Getting Started
 To install, hop into Docker and install the necessary datasets.
 ```
 docker-compose up --build
-cd template
-bash access_template.sh
-python3 -m template.datasets.aux_set.download
 ```
 
-### Run Template
-First, make sure to hop into docker:
+Now hop into Docker and download some files.
 ```
-docker-compose up --build
 cd template
 bash access_template.sh
 ```
-Start Neo4J:
+
+Now you should be inside the template container.
 ```
 service neo4j start
+python3 -m template.datasets.generic_double_seq.download
+python3 -m template.datasets.generic_flat.download
+python3 -m template.datasets.generic_sequential.download
 ```
-Preprocess dataset:
+
+Go into Neo4j by visting 0.0.0.0:7474 on your local browser.
+Run the following queries: 
 ```
-python3 -m template.datasets.test_set.download
+CREATE INDEX ON :Resource(uri)
+CALL semantics.importRDF('file:///template/datasets/apple.owl','RDF/XML', {})
+```
+
+Now run unit tests to make sure everything is awesome.
+```
 py.test template/tests
-```
-Start training:
-```
-python3 -m template.src.main.train
 ```
 
 ### Contribute

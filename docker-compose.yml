@@ -17,14 +17,15 @@ services:
   template:
     build:
       context: .
-      dockerfile: ./template/Dockerfile
+      dockerfile: ./Template/Dockerfile
     ports:
+      - 6006:6006
       - 5000:5000
       - 7687:7687
       - 1337:1337
       - 7474:7474
     volumes:
-      - ./template:/template
+      - ./Template:/Template
     networks:
       - default
     tty: true

@@ -31,6 +31,36 @@ class StandardLayers():
 
       return prediction
 
+  def _dense_layer(self, X, var_scope, config):
+    '''
+    Predicts end result.
+    Args:
+      X - input data of shape (batch, features).
+      var_scope - string name of tf variable scope.
+      config {
+          'n_batches': number of batches,
+          'n_input': number of input features,
+          'n_hidden': number of hidden units,
+          'n_output': number of potential output classes
+        }
+    '''
+
+    assert(type(var_scope) == str)
+    assert(type(config) == dict)
+    assert(X.shape == (config['n_batches'], config['n_input']))
+
+    with tf.variable_scope(var_scope):
+      W_1 = tf.get_variable("W_1", shape=(config['n_input'], config['n_hidden']))
+      b_1 = tf.get_variable("bias_1", shape=(config['n_hidden']))
+      A = tf.tanh(tf.matmul(X, W_1) + b_1, name="A")
+
+      W_2 = tf.get_variable("W_2", shape=(config['n_hidden'], config['n_output']))
+      b_2 = tf.get_variable("bias_2", shape=(config['n_output']))
+      output = tf.tanh(tf.matmul(A, W_2) + b_2, name="output")
+
+      assert(output.shape == (config['n_batches'], config['n_output']))
+      return output
+
   def _define_optimization_vars(self, target, prediction, result_weights=None):
     '''
     Defines loss, optim, and various metrics to tarck training progress.
@@ -50,13 +80,14 @@ class StandardLayers():
           if 'bias' not in v.name
       ]) * tf.constant(0.02, dtype=tf.float32)
 
+      delta = tf.constant(0.000001, dtype=tf.float32)
       if result_weights is None:
         loss = regularization - tf.reduce_sum(
-            target * tf.log(prediction), name="loss"
+            target * tf.log(prediction + delta), name="loss"
         )
       else:
         loss = regularization - tf.reduce_sum(
-            target * tf.log(prediction) *
+            target * tf.log(prediction + delta) *
             tf.constant(result_weights, dtype=tf.float32),
             name="loss"
         )

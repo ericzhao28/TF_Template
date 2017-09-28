@@ -11,20 +11,19 @@ class Base(StandardLayers):
   Base model featuring useful Tensorflow utilities.
   '''
 
-  def __init__(self, sess, model_config, data_config, model_logger):
+  def __init__(self, sess, config, logger):
     '''
     Initiate base model.
     Args:
       - sess: tf.Session().
-      - model_config: module with model config.
-      - data_config: module with data config.
-      - model_logger: custom logger handler.
+      - config: module with model config.
+      - logger: custom logger handler.
     '''
 
     self.sess = sess
-    self.data_config = data_config
-    self.model_config = model_config
+    self.config = config
     self.saver = None
+    self.logger = logger
     self.model_name = "default.model"
     self.global_step = tf.Variable(0,
                                    dtype=tf.int32,
@@ -41,8 +40,10 @@ class Base(StandardLayers):
     self.build_model()
 
     self.logger.debug('Model built. Initializing model writer...')
-    self.writer = tf.summary.FileWriter(self.data_config.GRAPHS_DIR,
-                                        self.sess.graph)
+    self.train_writer = tf.summary.FileWriter(self.config.GRAPHS_TRAIN_DIR,
+                                              self.sess.graph)
+    self.test_writer = tf.summary.FileWriter(self.config.GRAPHS_TEST_DIR,
+                                             self.sess.graph)
 
     self.logger.debug('Writer initialized. Initializing TF graph...')
     self.var_init = tf.global_variables_initializer()
@@ -64,11 +65,11 @@ class Base(StandardLayers):
 
     if global_step is None:
       self.saver.save(self.sess,
-                      self.data_config.CHECKPOINTS_DIR + self.model_name)
+                      self.config.CHECKPOINTS_DIR + self.model_name)
       self.logger.debug('Saved with no global step.')
     else:
       self.saver.save(self.sess,
-                      self.data_config.CHECKPOINTS_DIR + self.model_name,
+                      self.config.CHECKPOINTS_DIR + self.model_name,
                       global_step=self.global_step)
       self.logger.debug('Saved with global step.')
 
@@ -91,7 +92,7 @@ class Base(StandardLayers):
     if resume:
       self.logger.debug('Resume enabled. Finding newest model checkpoint.')
 
-      ckpt = tf.train.latest_checkpoint(self.data_config.CHECKPOINTS_DIR)
+      ckpt = tf.train.latest_checkpoint(self.config.CHECKPOINTS_DIR)
       if ckpt:
         self.logger.debug('Model checkpoint found. Restoring...')
         self.saver.restore(self.sess, ckpt)
@@ -104,10 +105,10 @@ class Base(StandardLayers):
     else:
       self.logger.debug('Resume disabled. Restoring from default save...')
       self.saver.restore(
-          self.sess, self.data_config.CHECKPOINTS_DIR + self.model_name)
+          self.sess, self.config.CHECKPOINTS_DIR + self.model_name)
       self.logger.info('Model restored.')
 
-  def train(self, X, Y):
+  def train(self, X, Y, test_X, test_Y):
     '''
     Run model training. Model must have been initialized.
     Args:
@@ -117,22 +118,40 @@ class Base(StandardLayers):
 
     self.logger.info('Starting model training...')
 
-    for j in range(self.model_config.ITERATIONS):
-      for i in range(0, len(X) + 1 - self.model_config.BATCH_SIZE,
-                     self.model_config.BATCH_SIZE):
+    for j in range(self.config.ITERATIONS):
+      for i in range(0, len(X) + 1 - self.config.BATCH_SIZE,
+                     self.config.BATCH_SIZE):
         feed_dict = {
-            self.x: X[i:i + self.model_config.BATCH_SIZE],
-            self.target: Y[i:i + self.model_config.BATCH_SIZE]
+            self.x: X[i:i + self.config.BATCH_SIZE],
+            self.target: Y[i:i + self.config.BATCH_SIZE]
         }
-        _, acc, loss, summary = self.sess.run(
+        _, train_acc, train_loss, train_summary = self.sess.run(
             [self.optim, self.acc, self.loss, self.summary_op],
             feed_dict=feed_dict)
+
+      # Save every 10 iterations
       if j % 10 == 0:
-        self.logger.info("Epoch: " + str(j) + " has loss: " +
-                         str(float(loss)) + " and accuracy: " +
-                         str(float(acc)))
         self.save(self.global_step)
-      self.writer.add_summary(summary, global_step=j)
+
+      if j % 1 == 0:
+        # Report training
+        self.logger.info("Epoch: " + str(j) + " has train loss: " +
+                         str(float(train_loss)) + " and train accuracy: " +
+                         str(float(train_acc)))
+        self.train_writer.add_summary(train_summary, global_step=j)
+
+        # Report test
+        feed_dict = {
+            self.x: test_X[:self.config.BATCH_SIZE],
+            self.target: test_Y[:self.config.BATCH_SIZE]
+        }
+        test_acc, test_loss, test_summary = self.sess.run(
+            [self.acc, self.loss, self.summary_op],
+            feed_dict=feed_dict)
+        self.logger.info("Epoch: " + str(j) + " has test loss: " +
+                         str(float(test_loss)) + " and test accuracy: " +
+                         str(float(test_acc)))
+        self.test_writer.add_summary(test_summary, global_step=j)
 
     self.logger.info('Model finished training!')
 
@@ -149,15 +168,15 @@ class Base(StandardLayers):
 
     self.logger.info('Starting model predictions...')
     predictions = []
-    for i in range(0, len(X) + 1 - self.model_config.BATCH_SIZE,
-                   self.model_config.BATCH_SIZE):
+    for i in range(0, len(X) + 1 - self.config.BATCH_SIZE,
+                   self.config.BATCH_SIZE):
       feed_dict = {
-          self.x: X[i:i + self.model_config.BATCH_SIZE]
+          self.x: X[i:i + self.config.BATCH_SIZE]
       }
       predictions += list(self.sess.run([self.prediction],
                           feed_dict=feed_dict)[0])
     self.logger.info('Model finished predicting!')
-    return predictions
+    return np.array(predictions)
 
   def shuffle_and_partition(self, X, Y, n_test, n_val):
     '''
@@ -203,6 +222,11 @@ class Base(StandardLayers):
     self.logger.debug('Finished partitioning Y.')
 
     self.logger.info('Finished shuffling and partitioning.')
+
+    uniques, counts = np.unique(np.argmax(train_Y, 1), return_counts=True)
+    for i in range(len(uniques)):
+      self.logger.debug(
+          'Class: ' + str(uniques[i]) + '; count: ' + str(counts[i]))
 
     return {"train": {"X": train_X, "Y": train_Y},
             "test": {"X": test_X, "Y": test_Y},

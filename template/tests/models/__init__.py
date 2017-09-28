@@ -1,1 +1,1 @@
-from . import test_base, test_SequentialLayers, test_StandardLayers
+from . import test_Sequential, test_Flat, test_DoubleSeq
