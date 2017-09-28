@@ -22,7 +22,7 @@ def create_graph(sess, edges, test=False):
     graph.add_entity(parent_nd)
     graph.add_entity(child_nd)
     graph.add_relationship(parent_nd, child_nd, edge)
-  
+
   load_logger.info('Graph with ' + str(len(edges)) + ' edges is created.')
   return graph
 

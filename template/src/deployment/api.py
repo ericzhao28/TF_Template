@@ -17,7 +17,7 @@ def get_demo():
 
   Make query to 0.0.0.0:5000/query with
   POST protocol, payload: {"query": "hi"}.
-  Response: {"response": "hello"}
+  Response: {"response": "hello"}.
   """
   text = str(request.data.get('query', ''))
   api_logger.debug('Received query: ' + text)

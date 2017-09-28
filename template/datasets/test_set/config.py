@@ -2,8 +2,8 @@
 Standard configuration for primary_set dataset.
 '''
 
-
 import os
+
 
 DUMPS_DIR = os.path.dirname(os.path.realpath(__file__)) + "/dumps/"
 SAVES_DIR = os.path.dirname(os.path.realpath(__file__)) + "/saves/"
