@@ -1,12 +1,12 @@
-# Eric's Project Template
-This is an open source basic template for Eric's machine learning projects and contracted work.
+# ML Project Template
+This is an open source template for my machine learning projects and contracted work.
 
 [![Maintenance Intended](http://maintained.tech/badge.svg)](http://maintained.tech/)
 
 ## Overview
 
 ### Features
-This cool template features a number of pretty neat features, including:
+A number of pretty neat features, including:
 * Dummy dataset generation for: flat data, sequential data, doubly-sequential data.
 * Skeleton for dataset modules with batteries included (ex: download, preprocessing, sequence padding).
 * Sample API/CLI deployment scripts.
@@ -14,7 +14,7 @@ This cool template features a number of pretty neat features, including:
 * Tensorflow base model featuring checkpoint saving/restoring, writing to Tensorboard, OOP-style model building.
 * Sample sequential encoding layers in TF.
 * Sample standard optimization/encoding layers in TF.
-* Full-featured logging and unit tests.
+* Robust logging and unit tests.
 
 ### Requirements
 * Docker-CE version 17.06.2-ce
@@ -28,7 +28,7 @@ docker-compose up --build
 
 Now hop into Docker and download some files.
 ```
-cd template
+cd Template
 bash access_template.sh
 ```
 
@@ -38,13 +38,6 @@ service neo4j start
 python3 -m template.datasets.generic_double_seq.download
 python3 -m template.datasets.generic_flat.download
 python3 -m template.datasets.generic_sequential.download
-```
-
-Go into Neo4j by visting 0.0.0.0:7474 on your local browser.
-Run the following queries: 
-```
-CREATE INDEX ON :Resource(uri)
-CALL semantics.importRDF('file:///template/datasets/apple.owl','RDF/XML', {})
 ```
 
 Now run unit tests to make sure everything is awesome.
