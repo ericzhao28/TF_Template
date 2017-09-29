@@ -56,6 +56,13 @@ def test_graph():
     assert(does_child1parent2_exists(graph))
     assert(not graph.get_entity(graph.build_node(name="sdf")).single())
 
+    graph.add_entity_property(graph.build_node("child2"), "woo", "no")
+    graph.add_entity_property(graph.build_node("child1"), "woo", "1")
+    assert(graph.get_entity(graph.build_node("child2")).single()[0].properties['woo'] == 'no')
+    assert(graph.get_entity(graph.build_node("child2")).single()[0].properties['woo'] != '1')
+    assert(graph.get_entity(graph.build_node("child1")).single()[0].properties['woo'] == '1')
+    assert(graph.get_entity(graph.build_node("child1")).single()[0].properties['woo'] != 'no')
+
     graph.wipe_tests()
 
     assert(not graph.get_entity(graph.build_node(name="child1")).single())
