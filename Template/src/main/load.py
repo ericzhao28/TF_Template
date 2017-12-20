@@ -21,3 +21,4 @@ def initialize_func(sess, logger):
 
   return function
 
+

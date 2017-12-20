@@ -1,1 +1,0 @@
-tensorboard --logdir double_seq_train:/Template/tests/models/saves/double_seq/graphs,flat_train:/Template/tests/models/saves/flat/graphs,sequential_train:/Template/tests/models/saves/sequential/graphs
