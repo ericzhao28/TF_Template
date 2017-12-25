@@ -2,13 +2,13 @@ from ..model_base import Base, SequenceLayers
 import tensorflow as tf
 
 
-class FlowAttModel(Base, SequenceLayers):
+class SeqAttModel(Base, SequenceLayers):
   '''
-  Model for predicting on flows.
+  Model for predicting on sequences.
   '''
 
   def __init__(self, sess, flags, logger, **kargs):
-    logger.debug('Instantiated flow att model')
+    logger.debug('Instantiated SeqAttModel model')
     Base.__init__(self, sess, flags, logger, **kargs)
 
   def build_model(self):

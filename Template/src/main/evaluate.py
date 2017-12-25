@@ -1,6 +1,6 @@
-from ...src.models import FlowAttModel, FlowModel
+from ...src.models import SeqAttModel
+from ...datasets import example
 from ...credentials import azure_account_name, azure_account_key
-from ...datasets import iscx, isot
 from .logger import eval_logger
 from . import config
 from azure.storage.blob import BlockBlobService
@@ -21,26 +21,15 @@ def evaluate(FLAGS):
 
     ##############################
     ### Instantiate model.
-    ### Valid specs: flowattmodel, flowmodel.
-    if FLAGS.model_type.lower() == "flowattmodel":
-      model = FlowAttModel(sess, FLAGS, eval_logger,
-                           model_name=FLAGS.model_name)
-    elif FLAGS.model_type.lower() == "flowmodel":
-      model = FlowModel(sess, FLAGS, eval_logger,
+    model = SeqAttModel(sess, FLAGS, eval_logger,
                         model_name=FLAGS.model_name)
-    else:
-      raise ValueError("Invalid model type.")
+    eval_logger.debug('Model instantiated.')
     ##############################
 
     ##############################
     ### Load dataset.
-    ### Valid specs: iscx, isot.
-    if FLAGS.dataset.lower() == "iscx":
-      test_dataset = iscx.load_full_test(FLAGS.n_steps)
-    elif FLAGS.dataset.lower() == "isot":
-      test_dataset = isot.load_full_test(FLAGS.n_steps)
-    else:
-      raise ValueError("Invalid dataset.")
+    test_dataset = example.load(None)
+    eval_logger.debug('Dataset loaded.')
     ##############################
 
     ##############################
@@ -52,9 +41,9 @@ def evaluate(FLAGS):
 
     for suffix in [".meta", ".index", ".data-00000-of-00001"]:
       filename = FLAGS.model_name + "-" + str(FLAGS.iter_num) + suffix
-      print(filename)
+      eval_logger.debug("Loading save file: " + filename)
       assert(filename in [x.name for x in
-                       block_blob_service.list_blobs("models")])
+                          block_blob_service.list_blobs("models")])
       block_blob_service.get_blob_to_path(
           "models",
           filename,
@@ -65,7 +54,10 @@ def evaluate(FLAGS):
     ##############################
     ### Build model
     model.initialize()
-    model.restore(FLAGS.checkpoints_dir + FLAGS.model_name + "-" + FLAGS.iter_num)
+    eval_logger.debug('Model initialized.')
+    model.restore(FLAGS.checkpoints_dir + FLAGS.model_name +
+                  "-" + FLAGS.iter_num)
+    eval_logger.debug('Model restored.')
     ##############################
 
     ##############################
@@ -83,14 +75,10 @@ def evaluate(FLAGS):
 if __name__ == "__main__":
   FLAGS = tf.app.flags.FLAGS
 
-  tf.app.flags.DEFINE_string("dataset", "blank",
-                             "Which dataset to use: iscx/isot")
   tf.app.flags.DEFINE_string("model_name", "default",
                              "Name of model to be used in logs.")
   tf.app.flags.DEFINE_string("iter_num", "0",
                              "Iteration number of save.")
-  tf.app.flags.DEFINE_string("model_type", "FlowAttModel",
-                             "FlowAttModel/FlowModel")
   tf.app.flags.DEFINE_integer("s_batch", 32,
                               "Size of batches")
   tf.app.flags.DEFINE_float("v_regularization", 0.15,
