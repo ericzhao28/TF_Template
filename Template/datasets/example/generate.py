@@ -1,5 +1,4 @@
 import random
-from ..utils.network_utils import upload_file
 from . import config, preprocess_dataset
 from .logger import set_logger
 import numpy as np
@@ -8,7 +7,7 @@ import numpy as np
 random.seed(0)
 
 
-def main():
+def main(config):
   '''
   Generates generic sequential dataset.
   '''
@@ -25,10 +24,10 @@ def main():
       for k in range(random.randrange(7, 12)):
         # Variable length datapoints, 7-12 long.
         x.append([
-            random.randrange(i + k, i + k + 2, 0.01),
-            random.randrange(0, 100, 0.01),
-            random.randrange(1, 100, 0.01),
-            random.randrange(i + k, i + k + 3, 0.01)
+            random.randrange(i + k, i + k + 2, 1),
+            random.randrange(0, 100, 1),
+            random.randrange(1, 100, 1),
+            random.randrange(i + k, i + k + 3, 1)
         ])
       # Total of 200 data points generated.
       X.append(x)
@@ -49,17 +48,9 @@ def main():
   del(Y)
   ##############################
 
-  ##############################
-  ### Upload files
-  upload_file("datasets", "example_X",
-              config.EXAMPLE_FEATURES_PATH)
-  upload_file("datasets", "example_Y",
-              config.EXAMPLE_LABELS_PATH)
-  ##############################
-
   return None
 
 
 if __name__ == "__main__":
-  main()
+  main(config)
 

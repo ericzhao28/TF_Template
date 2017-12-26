@@ -4,7 +4,7 @@ from ..utils import shaping_utils
 import numpy as np
 
 
-def load(test_size=None):
+def load(test_size=None, config=config):
   '''
   Loads dataset.
   '''

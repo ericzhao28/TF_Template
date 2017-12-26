@@ -2,5 +2,5 @@
 
 from .preprocessing import preprocess_dataset
 from .load import load
-from . import download, generate
+from . import generate
 
