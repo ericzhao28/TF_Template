@@ -1,6 +1,6 @@
-from ...src.models import FlowAttModel, FlowModel
+from ...src.models import SeqAttModel
 from ...credentials import azure_account_name, azure_account_key
-from ...datasets import iscx, isot
+from ...datasets import example
 from .logger import train_logger
 from . import config
 from azure.storage.blob import BlockBlobService
@@ -21,31 +21,21 @@ def train(FLAGS):
 
     ##############################
     ### Instantiate model.
-    ### Valid specs: flowattmodel, flowmodel.
-    if FLAGS.model_type.lower() == "flowattmodel":
-      model = FlowAttModel(sess, FLAGS, train_logger,
-                           model_name=FLAGS.model_name)
-    elif FLAGS.model_type.lower() == "flowmodel":
-      model = FlowModel(sess, FLAGS, train_logger,
+    model = SeqAttModel(sess, FLAGS, train_logger,
                         model_name=FLAGS.model_name)
-    else:
-      raise ValueError("Invalid model type.")
+    train_logger.debug('Model instantiated.')
     ##############################
 
     ##############################
     ### Load dataset.
-    ### Valid specs: iscx, isot.
-    if FLAGS.dataset.lower() == "iscx":
-      train_dataset, test_dataset = iscx.load(FLAGS.s_test, FLAGS.n_steps)
-    elif FLAGS.dataset.lower() == "isot":
-      train_dataset, test_dataset = isot.load(FLAGS.s_test, FLAGS.n_steps)
-    else:
-      raise ValueError("Invalid dataset.")
+    train_dataset, test_dataset = example.load(FLAGS.s_test)
+    train_logger.debug('Dataset loaded.')
     ##############################
 
     ##############################
     ### Build model
     model.initialize()
+    train_logger.debug('Model initialized.')
     ##############################
 
     ##############################
@@ -114,7 +104,8 @@ def train(FLAGS):
       block_blob_service.create_blob_from_path(
           "models",
           FLAGS.model_name + "-" + str(model.min_iter) + suffix,
-          FLAGS.checkpoints_dir + FLAGS.model_name + "-" + str(model.min_iter) + suffix
+          FLAGS.checkpoints_dir + FLAGS.model_name + "-" +
+          str(model.min_iter) + suffix
       )
     ##############################
 
@@ -122,12 +113,8 @@ def train(FLAGS):
 if __name__ == "__main__":
   FLAGS = tf.app.flags.FLAGS
 
-  tf.app.flags.DEFINE_string("dataset", "blank",
-                             "Which dataset to use: iscx/isot")
   tf.app.flags.DEFINE_string("model_name", "default",
                              "Name of model to be used in logs.")
-  tf.app.flags.DEFINE_string("model_type", "FlowAttModel",
-                             "FlowAttModel/FlowModel")
   tf.app.flags.DEFINE_integer("s_batch", 128,
                               "Size of batches")
   tf.app.flags.DEFINE_float("v_regularization", 0.1,

@@ -1,3 +1,2 @@
-from .flow_model import FlowModel
-from .flow_att_model import FlowAttModel
+from .seq_att_model import SeqAttModel
 
